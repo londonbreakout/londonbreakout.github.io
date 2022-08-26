@@ -47,7 +47,7 @@
 </code></pre></div>
 
 <p>Within the kdb+/q language there are shortcuts for retrieving some of the <a href="https://code.kx.com/q/ref/dotz/">system information</a> as atomic values e.g. the present time or date. </p>
-<p>We can run the below code to retieve them - lets do that now! </p>
+<p>We can run the below code to retieve them - let's do that now! </p>
 <div class="highlight"><pre><span></span><code><span class="o">.</span><span class="n">z.t</span><span class="w">  </span><span class="c1">//Current time </span><span class="w"></span>
 </code></pre></div>
 
@@ -70,7 +70,7 @@
 <div class="highlight"><pre><span></span><code><span class="s2">&quot;a list of characters&quot;</span><span class="w">  </span><span class="c1">//a list of characters in kdb+/q is a string</span><span class="w"></span>
 </code></pre></div>
 
-<p style='color:#273a6e'><i> Text data in kdb+/q is commonly stored as a List (see corresponding section) of characters, typically referred to as a "string".</i></p>
+<p style='color:#273a6e'><i> Text data in kdb+/q is commonly stored as a List of characters, typically referred to as a "string".</i></p>
 
 <p>Lists/Vectors are actually so important within kdb+/q they have their own separate module which we will come to next!</p>
 <h1>Datatypes</h1>
@@ -78,7 +78,6 @@
 <div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span><span class="il">60</span><span class="w">  </span><span class="c1">//the default datatype is long </span><span class="w"></span>
 </code></pre></div>
 
-<p>This is the first inbuilt function (known as keywords, or primitive operations) in kdb+/q  we have used! Congratulations! </p>
 <p style='color:#273a6e'><i> Looking at the output of <code>-7h</code> from our <code>type</code> command, what can we say about this return value? </i></p>
 
 <p>We can see that the returned output from the <code>type</code> command is a short because of the trailing <code>h</code>! The return value being a short is not related to the data we passed to the <code>type</code> command, rather this is just the format in which the helpful information (<code>-7</code>) returned by the command is output. Going forward we can safely ignore the trailing <code>h</code> as not having any information from the passed data.</p>
