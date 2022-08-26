@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Atoms and Primitives in kdb+/q</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <meta name="description" content="Atoms An atom in kdb+/q is any single item of a particular datatype. Atoms form the building blocks for more advanced data structures in kdb+/q. 2..." />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">LondonBreakout.io</a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/category/kdbq.html">kdb+/q</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/atoms-and-primitives-in-kdbq.html" rel="bookmark"
+           title="Permalink to Atoms and Primitives in kdb+/q">Atoms and Primitives in kdb+/q</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2022-08-26T20:52:00+02:00">
+                Published: Fri 26 August 2022
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/fabio-gaiera.html">Fabio Gaiera</a>
+        </address>
+<p>In <a href="/category/kdbq.html">kdb+/q</a>.</p>
+
+</footer><!-- /.post-info -->      <h2>Atoms</h2>
+<p>An <em>atom</em> in kdb+/q is any single item of a particular <a href="https://code.kx.com/q/basics/datatypes/">datatype</a>. Atoms form the building blocks for more advanced data structures in kdb+/q.</p>
+<div class="highlight"><pre><span></span><code><span class="il">2</span><span class="w">   </span><span class="c1">//default type is long when not a floating numeric value</span><span class="w"></span>
+<span class="mf">2.3</span><span class="w"> </span><span class="c1">//default type is float when floating </span><span class="w"></span>
+</code></pre></div>
+
+<p>There are a number of different datatypes in kdb+, and a large number of these are time-specific datatypes. </p>
+<div class="highlight"><pre><span></span><code><span class="ld">09:30:00</span><span class="w">    </span><span class="c1">//this is a time type</span><span class="w"></span>
+<span class="ld">2020.01.01</span><span class="w">  </span><span class="c1">//this is a date type </span><span class="w"></span>
+</code></pre></div>
+
+<p>Within the kdb+/q language there are shortcuts for retrieving some of the <a href="https://code.kx.com/q/ref/dotz/">system information</a> as atomic values e.g. the present time or date. </p>
+<p>We can run the below code to retieve them - lets do that now! </p>
+<div class="highlight"><pre><span></span><code><span class="o">.</span><span class="n">z.t</span><span class="w">  </span><span class="c1">//Current time </span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="o">.</span><span class="n">z.d</span><span class="w">  </span><span class="c1">//Current date </span><span class="w"></span>
+</code></pre></div>
+
+<p>Each of the above items are singular atomic values. </p>
+<p>If we want to create an atom of a datatype that isn't the default, we can specify <a href="https://code.kx.com/q/basics/datatypes/">the type</a> with a trailing type indicator matching the character code for that type as follows: </p>
+<div class="highlight"><pre><span></span><code><span class="mf">30e</span><span class="w"> </span><span class="c1">//creating a real - the &quot;e&quot; is the type extension </span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="mi">3h</span><span class="w">  </span><span class="c1">//creating a short - the &quot;h&quot; is the type extension</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Vectors/Lists</h2>
+<p>An atom in kdb+/q refers to a singular value - a vector is a list of atoms. </p>
+<div class="highlight"><pre><span></span><code><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="w">   </span><span class="c1">//a list of longs </span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;a list of characters&quot;</span><span class="w">  </span><span class="c1">//a list of characters in kdb+/q is a string</span><span class="w"></span>
+</code></pre></div>
+
+<p style='color:#273a6e'><i> Text data in kdb+/q is commonly stored as a List (see corresponding section) of characters, typically referred to as a "string".</i></p>
+
+<p>Lists/Vectors are actually so important within kdb+/q they have their own separate module which we will come to next!</p>
+<h1>Datatypes</h1>
+<p>The kdb+/q language has a built in command called <a href="https://code.kx.com/q/ref/type/">type</a> that will let us know the datatype of anything passed to it. </p>
+<div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span><span class="il">60</span><span class="w">  </span><span class="c1">//the default datatype is long </span><span class="w"></span>
+</code></pre></div>
+
+<p>This is the first inbuilt function (known as keywords, or primitive operations) in kdb+/q  we have used! Congratulations! </p>
+<p style='color:#273a6e'><i> Looking at the output of <code>-7h</code> from our <code>type</code> command, what can we say about this return value? </i></p>
+
+<p>We can see that the returned output from the <code>type</code> command is a short because of the trailing <code>h</code>! The return value being a short is not related to the data we passed to the <code>type</code> command, rather this is just the format in which the helpful information (<code>-7</code>) returned by the command is output. Going forward we can safely ignore the trailing <code>h</code> as not having any information from the passed data.</p>
+<h2>How to use the <code>type</code> command</h2>
+<p>The type command tells us two pieces of information: </p>
+<ul>
+<li>Whether the input is atomic or a vector  </li>
+<li>The datatype of the input  </li>
+</ul>
+<p>Let's compare the following outputs and fill out the requested information to see if we can deduce how this command works.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span><span class="il">60</span><span class="w"> </span><span class="c1">//the input is an atomic long with a value of 60 </span><span class="w"></span>
+</code></pre></div>
+
+<p style='color:#273a6e'><i> Hopefully this has helped to clarify the way in which the <code>type</code> works, but formally these rules are described below. </i></p>
+
+<ul>
+<li>If the output from <code>type</code> is <em>positive</em> the input was a vector  </li>
+<li>If output from <code>type</code> was <em>negative</em>, the input was atomic.  </li>
+<li>The numeric value returns corresponds to the Numeric reference value associated with the type of the input. e.g. a short input will return an numeric value of 5, etc.  </li>
+</ul>
+<p>Again, the trailing <code>h</code> returned from the <code>type</code> command itself is because the return is a short. This is because we only have a finite number of types, so using a bigger datatype to store the values in would be wasteful. </p>
+<h2>Temporal datatypes</h2>
+<p>Now we understand the basics of atoms, vectors and datatypes, we can delve deeper into temporal datatypes. </p>
+<div class="highlight"><pre><span></span><code><span class="ld">09:30:00.000</span><span class="w"> </span><span class="c1">//time type is specified as hh:mm:ss.milliseconds</span><span class="w"></span>
+<span class="ld">09:30:00</span><span class="w">     </span><span class="c1">//second </span><span class="w"></span>
+<span class="ld">09:30</span><span class="w">        </span><span class="c1">//minute</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span><span class="ld">09:30:00.000</span><span class="w"> </span>
+<span class="nb">type</span><span class="w"> </span><span class="ld">09:30:00</span><span class="w"> </span>
+<span class="nb">type</span><span class="w"> </span><span class="ld">09:30</span><span class="w"></span>
+</code></pre></div>
+
+<p>We can add these using the primitive <a href="https://code.kx.com/q/ref/add/"><code>+</code></a>:</p>
+<div class="highlight"><pre><span></span><code><span class="ld">09:30:00.000</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="ld">00:12</span><span class="w">     </span><span class="c1">//kdb+/q understands arithmetic between these types</span><span class="w"></span>
+<span class="ld">09:30:00</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="ld">00:12</span><span class="w">         </span><span class="c1">//highest level of granularity is preserved </span><span class="w"></span>
+</code></pre></div>
+
+<p>Dates in kdb+/q have the format yyyy.mm.dd: </p>
+<div class="highlight"><pre><span></span><code><span class="ld">2020.01.01</span><span class="w">  </span><span class="c1">//a date</span><span class="w"></span>
+<span class="o">.</span><span class="n">z.d</span><span class="w">        </span><span class="c1">//current date</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="o">.</span><span class="n">z.d</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="il">6</span><span class="w">    </span><span class="c1">//adding 6 days to the specified date</span><span class="w"></span>
+</code></pre></div>
+
+<p>Time intervals can also be explicitly encoded in the timespan type, which has the format xDhh.mm.ss.nanoseconds, where x is a number of days</p>
+<div class="highlight"><pre><span></span><code><span class="ld">2020.01.01</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="ld">6D00:00:00.000</span><span class="w">   </span><span class="c1">//the output is a timestamp! A timestamp is a combination of a time and date</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Textual datatypes</h2>
+<p>Almost all languages have some way to store non-numeric text/categorical data - in kdb+/q there are two datatypes that can be used for this data. </p>
+<p>Textual data can be stored as either a <code>symbol</code> or a <code>character</code> string: </p>
+<div class="highlight"><pre><span></span><code><span class="ss">`thisIsAsymbol</span><span class="w"> </span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;this is a character&quot;</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span><span class="ss">`thisIsAsymbol</span><span class="w">         </span><span class="c1">//symbols are created using a leading backtick</span><span class="w"></span>
+<span class="nb">type</span><span class="w"> </span><span class="s2">&quot;this is a character&quot;</span><span class="w">  </span><span class="c1">//strings are enclosed in quotes</span><span class="w"></span>
+</code></pre></div>
+
+<p style='color:#273a6e'><i> Looking at the output of <code>type</code> command, what major difference can we see between strings and symbols?</i></p>
+
+<p>We can see the <code>string</code> is actually a list of characters! This is important to remember when we get to vector operations, particularly because a list of strings (e.g. in a column of a table) will really be a list of lists.  </p>
+<p>Even though the <code>symbol</code> has multiple letters, this is actually an atomic value. </p>
+<h2>Nulls and Infinite values</h2>
+<p>Each datatype has an associated <a href="https://code.kx.com/q/basics/datatypes/">null and infinite value</a>, with the exception of types for which this doesn't make sense (e.g. an infinite Guid).</p>
+<div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span><span class="m">0N</span><span class="w">    </span><span class="c1">//null long </span><span class="w"></span>
+<span class="nb">type</span><span class="w"> </span><span class="m">0w</span><span class="w">    </span><span class="c1">//infinite float </span><span class="w"></span>
+<span class="nb">type</span><span class="w"> </span><span class="m">0Nf</span><span class="w">   </span><span class="c1">//also a null float  - in general a null is 0N + the character value of the type </span><span class="w"></span>
+</code></pre></div>
+
+<p>We can use the <a href="https://code.kx.com/q/ref/null/"><code>null</code></a> keyword to identify null values: </p>
+<div class="highlight"><pre><span></span><code><span class="nb">null</span><span class="w"> </span><span class="m">0N</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">1</span><span class="w"> </span><span class="m">0N</span><span class="w"> </span><span class="il">3</span><span class="w">   </span><span class="c1">//returns a boolean array corresponding to the list </span><span class="w"></span>
+</code></pre></div>
+
+<h1>Primitives</h1>
+<h2>Basic Primitives</h2>
+<p>Primitives are inbuilt native functions in kdb+/q. The 4 basic arithmetic operators in q are:</p>
+<div class="highlight"><pre><span></span><code><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">addition</span><span class="p">)</span><span class="w"></span>
+<span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">subtraction</span><span class="p">)</span><span class="w"></span>
+<span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">multiplication</span><span class="p">)</span><span class="w"></span>
+<span class="c">% (division)</span><span class="w"></span>
+</code></pre></div>
+
+<p>In general, the terms <em>primitives</em>, <em>operators</em> and <em>keywords</em> refer to the <a href="https://code.kx.com/q/ref/">inbuilt functions in kdb+/q</a>. </p>
+<div class="highlight"><pre><span></span><code><span class="il">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">4.0</span><span class="w">  </span><span class="c1">//arithmetic will conform </span><span class="w"></span>
+<span class="il">6</span><span class="o">%</span><span class="il">3</span><span class="w">      </span><span class="c1">//division with longs will return a float </span><span class="w"></span>
+</code></pre></div>
+
+<p>There are more inbuilt functions like the <code>type</code> and <code>floor</code> commands we have already used e.g <a href="https://code.kx.com/q/ref/neg/"><code>neg</code></a> (to get the negative of a number), or set operations like <a href="https://code.kx.com/q/ref/in/"><code>in</code></a> or <a href="https://code.kx.com/q/ref/except/"><code>except</code></a> etc. </p>
+<div class="highlight"><pre><span></span><code><span class="nb">neg</span><span class="w"> </span><span class="mf">5.4</span><span class="w">  </span><span class="c1">//or explicity -5.4 </span><span class="w"></span>
+<span class="o">-</span><span class="mf">5.4</span><span class="w"> </span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="il">1</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="w">    </span><span class="c1">//is (this item) in (this list)</span><span class="w"></span>
+<span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="w">  </span><span class="c1">//are (these items) in (this list) </span><span class="w"></span>
+</code></pre></div>
+
+<h2>Operator Precedence</h2>
+<p style='color:#273a6e'><i> In kdb+/q the order of execution of a code command is right to left, also referred to as 'left of right' </i></p>
+
+<p>There are many reasons why kdb+/q might operate in this fashion, but one such reason is performance based. By performing operations from right to left, we avoid the need to consult precedence tables. </p>
+<p>If it didn't operate in this way the whole statement would need to be read and then reconstructed before passing to the compiler based upon the specified operator hierarchy (think of <a href="https://en.wiktionary.org/wiki/BOMDAS">BOMDAS</a>!).</p>
+<p>The sentence above is crucial when reading existing Q code. This allows for shorter code snippets, but requires the reader to be completely aware of the languages precedence. </p>
+<p>What do you expect the below cell to return?</p>
+<div class="highlight"><pre><span></span><code><span class="il">3</span><span class="o">*</span><span class="il">4</span><span class="o">+</span><span class="il">2</span><span class="w"> </span>
+</code></pre></div>
+
+<h2>Comparison Primitives</h2>
+<p>Comparison in kdb+/q has intuitive operators largely in line with mathematical notation:</p>
+<div class="highlight"><pre><span></span><code>&gt;   is greater than
+&lt;   is less than
+&gt;=  is greater than or equal to
+&lt;=  is less than or equal to
+&lt;&gt;  not equal to
+</code></pre></div>
+
+<p>Comparison checks return booleans indicating if the comparison criteria is met (<code>1b</code>) or not (<code>0b</code>).</p>
+<p>Below are some examples:</p>
+<div class="highlight"><pre><span></span><code><span class="il">5</span><span class="o">&gt;</span><span class="il">4</span><span class="w"></span>
+<span class="il">5</span><span class="o">&lt;&gt;</span><span class="il">4</span><span class="w"></span>
+<span class="il">5</span><span class="o">&gt;</span><span class="il">5</span><span class="w"></span>
+<span class="il">5</span><span class="o">&gt;=</span><span class="il">5</span><span class="w"></span>
+</code></pre></div>
+
+<p>A special case of comparison is to check if two items are equal. In kdb+/q there are two ways to check equality: </p>
+<div class="highlight"><pre><span></span><code>=   equal values
+~   exact match
+</code></pre></div>
+
+<p>The <code>=</code> operator will check if the values are equal but isn't a <em>strict</em> check, in that it doesn't require the datatypes between the two objects to be the same. </p>
+<p>The <code>~</code> operator (referred to as <a href="https://code.kx.com/q/ref/match">tilda or match</a> ) checks to see if both the value and type are the same.</p>
+<div class="highlight"><pre><span></span><code><span class="il">4</span><span class="o">=</span><span class="mf">4.0</span><span class="w"> </span><span class="c1">//check if representative value is equal </span><span class="w"></span>
+<span class="il">4</span><span class="o">~</span><span class="mf">4.0</span><span class="w"> </span><span class="c1">//check value and type match</span><span class="w"></span>
+</code></pre></div>
+
+<p>We will talk in later sections about lists, but as a quick intro these operations can also be applied to lists.</p>
+<div class="highlight"><pre><span></span><code><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="o">=</span><span class="il">1</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="il">3</span><span class="w">   </span><span class="c1">// when dealing with lists, = compares the lists item-wize</span><span class="w"></span>
+<span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="o">~</span><span class="il">1</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="il">3</span><span class="w">   </span><span class="c1">// even with lists, ~ always returns a single true or false</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Function notation</h2>
+<p>Thus far, we have used <code>infix</code> notation with our keywords. Functions/keywords can also be called explicitly using <code>functional</code> notation as follows: </p>
+<div class="highlight"><pre><span></span><code><span class="nb">neg</span><span class="w"> </span><span class="il">10</span><span class="w"> </span><span class="il">2</span><span class="w"> </span>
+<span class="nb">neg</span><span class="p">[</span><span class="il">10</span><span class="w"> </span><span class="il">2</span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+
+<p>With functional notation the function parameters are passed <code>;</code> separated into the calling function: </p>
+<div class="highlight"><pre><span></span><code><span class="il">1</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="w"> </span>
+<span class="ow">in</span><span class="p">[</span><span class="il">1</span><span class="p">;</span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+
+<h1>Variables &amp; Assignment</h1>
+<h2>Variable Assignment</h2>
+<p>Variables are used to store information to be later referenced and manipulated in a computer program - storing intermediate results is useful for avoiding repeated work. </p>
+<p>To assign a variable to a value, we use the <code>:</code> operator to pair the name we have chosen for the variable with the value we wish to assign to it.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">a</span><span class="o">:</span><span class="il">25</span><span class="w"></span>
+</code></pre></div>
+
+<p style='color:#273a6e'><i> Note that in kdb+/q assignment doesn't use = as in many other languages. As we saw previously = is used to check equality. In kdb+/q to assign a variable to a value we use : to assign the right hand side (RHS) to the variable name on the left hand side (LHS).</i></p>
+
+<p>If I wish to examine the value of a variable, simply type it out and hit enter</p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="w"></span>
+</code></pre></div>
+
+<p>We can use our new variable in arithmetic expressions:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">b</span><span class="o">:</span><span class="w"> </span><span class="il">10</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
+<span class="n">b</span><span class="w"></span>
+</code></pre></div>
+
+<p>We can continue assigning <code>a</code> to other values.</p>
+<p>Rather than separating the assignment and visualisation of the variable into separate cells, we can use the <code>show</code> keyword to immediately see the assigned value.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">a</span><span class="o">:</span><span class="il">12</span><span class="w">    </span><span class="c1">// assign a to another long type</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="nv">a</span><span class="o">:</span><span class="s2">&quot;G&quot;</span><span class="w">   </span><span class="c1">// Assign a to a completely different type (a char in this case)</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="nv">a</span><span class="o">:</span><span class="mf">4.5</span><span class="w">   </span><span class="c1">// Assign a to a fractional number (called a float in q)</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="w"></span>
+<span class="n">b</span><span class="w">      </span><span class="c1">//note changing a hasn&#39;t changed b!</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Using Variables in Arithmetic Operations</h2>
+<p>A variable can be used in any expression. Some simple examples below:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">pi</span><span class="o">:</span><span class="il">22</span><span class="o">%</span><span class="il">7</span><span class="w"></span>
+<span class="nv">radius</span><span class="o">:</span><span class="il">5</span><span class="w"></span>
+<span class="nv">area</span><span class="o">:</span><span class="n">pi</span><span class="o">*</span><span class="n">radius</span><span class="o">*</span><span class="n">radius</span><span class="w"> </span><span class="c1">//area of circle formula</span><span class="w"></span>
+<span class="n">area</span><span class="w"></span>
+</code></pre></div>
+
+<p>Unlike in some other languages, assignment in kdb+/q isn't required to be stated separately on it's own individual line! Since execution occurs from right to left, we can make an assignment and then continue to operate with this data after assignment. </p>
+<p>We could therefore rewrite the above as follows: </p>
+<div class="highlight"><pre><span></span><code><span class="nv">pi</span><span class="o">:</span><span class="il">22</span><span class="o">%</span><span class="il">7</span><span class="w"></span>
+<span class="nv">area</span><span class="o">:</span><span class="n">pi</span><span class="o">*</span><span class="n">radius</span><span class="o">*</span><span class="nv">radius</span><span class="o">:</span><span class="il">5</span><span class="w">  </span><span class="c1">//notice assignment working twice here - we have still defined radius to be 5 here too</span><span class="w"></span>
+<span class="n">area</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1">//calculating the hours of sleep and assigning it to a variable yearly</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="nv">yearly</span><span class="o">:</span><span class="mf">6.8</span><span class="o">*</span><span class="mf">365.25</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1">//using neg built in function to convert the yearly value to a &quot;-&quot;</span><span class="w"></span>
+<span class="c1">//this is a very &quot;q&quot; way of doing it as we execute from right to left</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="nv">missed</span><span class="o">:</span><span class="nb">neg</span><span class="p">[</span><span class="n">yearly</span><span class="p">]</span><span class="o">+</span><span class="mf">365.25</span><span class="o">*</span><span class="il">8</span><span class="w"></span>
+<span class="c1">//for readability </span><span class="w"></span>
+<span class="p">(</span><span class="mf">365.25</span><span class="o">*</span><span class="il">8</span><span class="p">)</span><span class="o">-</span><span class="n">yearly</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1">//using integer division to round down</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="nv">days</span><span class="o">:</span><span class="w"> </span><span class="n">missed</span><span class="w"> </span><span class="ow">div</span><span class="w"> </span><span class="il">24</span><span class="w"> </span>
+</code></pre></div>
+
+<h2>Assignment and Projecting Functions</h2>
+<p>In-built kdb+/q functions which take multiple inputs can be bound to a given input, creating what is called a projection. </p>
+<div class="highlight"><pre><span></span><code><span class="nv">add2</span><span class="o">:</span><span class="il">2</span><span class="o">+</span><span class="w">      </span><span class="c1">//we don&#39;t define the second input </span><span class="w"></span>
+<span class="nv">add2</span><span class="o">:+</span><span class="p">[</span><span class="il">2</span><span class="p">;]</span><span class="w">   </span><span class="c1">//functional notation - we leave the second parameter undefined </span><span class="w"></span>
+<span class="nv">add2</span><span class="o">:+</span><span class="p">[</span><span class="il">2</span><span class="p">]</span><span class="w">    </span><span class="c1">//all of these are equivalent</span><span class="w"></span>
+<span class="n">add2</span><span class="w">       </span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">add2</span><span class="w"> </span><span class="il">4</span><span class="w"> </span>
+</code></pre></div>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://www.linkedin.com/in/fabiogaiera/">LinkedIn</a></li>
+                            <li><a href="https://github.com/fabiogaiera">GitHub</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

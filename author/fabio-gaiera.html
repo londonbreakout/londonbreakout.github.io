@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>LondonBreakout.io - Fabio Gaiera</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">LondonBreakout.io</a></h1>
+                <nav><ul>
+                    <li><a href="/category/kdbq.html">kdb+/q</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/lists-in-kdbq.html">Lists in kdb+/q</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2022-08-26T21:00:00+02:00">
+                Published: Fri 26 August 2022
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/fabio-gaiera.html">Fabio Gaiera</a>
+        </address>
+<p>In <a href="/category/kdbq.html">kdb+/q</a>.</p>
+
+</footer><!-- /.post-info --><h1>Introduction</h1>
+<p>Lists are the basis of all data structures in kdb+. For example, a dictionary is a collection of lists and a table is a list of dictionaries. As kdb+ is a column orientated database and a column is really a list, the list data structure is of great importance in this technology.</p>
+<p>One very powerful feature of q is the ability to execute the built in arithmetic and logical operators
+directly on lists without the need for some explicit loops across the list. In the examples below,
+the operation will implicitly be applied uniformly to all elements in the list:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">x</span><span class="o">:</span><span class="il">10</span><span class="w"> </span><span class="il">20</span><span class="w"> </span><span class="il">30</span><span class="w"> </span><span class="il">40</span><span class="w"> </span><span class="il">50</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">x</span><span class="o">+</span><span class="il">1</span><span class="w"> </span><span class="c1">/Increment all elements in x by 1</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">x</span><span class="o">%</span><span class="il">10</span><span class="w"> </span><span class="c1">/Divide all elements in x by 10</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">x</span><span class="o">&lt;=</span><span class="il">30</span><span class="w"> </span><span class="c1">/Check all elements in x to see if they are less than or equal to 30</span><span class="w"></span>
+</code></pre></div>
+
+<p>There are two types of lists:</p>
+<ul>
+<li>Simple Lists</li>
+<li>General Lists</li>
+</ul>
+<h2>Simple Lists</h2>
+<p>A list consisting of atoms all of which are the same type is called a simple list or a vector.</p>
+<p>To create a list you can use brackets or no brackets:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">l1</span><span class="o">:</span><span class="p">(</span><span class="il">1</span><span class="p">;</span><span class="il">2</span><span class="p">;</span><span class="il">3</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">l2</span><span class="o">:</span><span class="mf">1.2</span><span class="w"> </span><span class="mf">3.4</span><span class="w"> </span><span class="mf">4.5</span><span class="w"> </span>
+</code></pre></div>
+
+<p>Lets create a number of lists of various types and then use the type command to check the returned values</p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">L</span><span class="o">:</span><span class="il">10</span><span class="w"> </span><span class="il">20</span><span class="w"> </span><span class="il">30</span><span class="w">         </span><span class="c1">// simple list of longs</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="nv">F</span><span class="o">:</span><span class="mf">3.4</span><span class="w"> </span><span class="mf">5.0</span><span class="w"> </span><span class="mf">3.1</span><span class="w">      </span><span class="c1">// simple list of floats</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="nv">I</span><span class="o">:</span><span class="il">3</span><span class="w"> </span><span class="il">4</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="mi">6i</span><span class="w">         </span><span class="c1">// simple list of ints - note not the default type, so trailing i in the output</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="nv">H</span><span class="o">:</span><span class="il">100</span><span class="w"> </span><span class="il">200</span><span class="w"> </span><span class="mi">300h</span><span class="w">     </span><span class="c1">// simple list of shorts</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="nv">str</span><span class="o">:</span><span class="s2">&quot;hello there&quot;</span><span class="w">  </span><span class="c1">// simple list of chars (also called a string)</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="nv">s</span><span class="o">:</span><span class="ss">`JPM`GE`IBM</span><span class="w">      </span><span class="c1">// simple list of symbols</span><span class="w"></span>
+</code></pre></div>
+
+<p>As you would expect, the <a href="https://code.kx.com/q/ref/type/">type</a> function should return a positive number (as a short type) for each of the above lists</p>
+<div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
+<span class="nb">type</span><span class="w"> </span><span class="n">F</span><span class="w"></span>
+<span class="nb">type</span><span class="w"> </span><span class="n">I</span><span class="w"></span>
+<span class="nb">type</span><span class="w"> </span><span class="n">H</span><span class="w"></span>
+<span class="nb">type</span><span class="w"> </span><span class="n">str</span><span class="w"></span>
+<span class="nb">type</span><span class="w"> </span><span class="n">s</span><span class="w"></span>
+</code></pre></div>
+
+<p style='color:#273a6e'><i> Notice that in list L above we didn't explicitly "type" the list (like we did for I and H), rather we just supplied a list of numbers. In kdb+/q there are default datatypes that are assumed when not explicitly declared. For whole numbers, the default type is long and for decimal numbers the default type is float. In older versions of kdb+/q, specifically below v3.X.(e.g. v2.X) the default datatype for whole numbers used to be integer. </i></p>
+
+<h2>General Lists</h2>
+<p>A general list is either:  </p>
+<ul>
+<li>A list where not all elements are of the same type  </li>
+<li>A list of lists  </li>
+</ul>
+<p>Below are examples of general lists:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">person</span><span class="o">:</span><span class="p">(</span><span class="ss">`John</span><span class="p">;</span><span class="il">32</span><span class="p">;</span><span class="ss">`USA</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="ss">`John</span><span class="o">,</span><span class="il">32</span><span class="o">,</span><span class="ss">`USA</span><span class="w"></span>
+</code></pre></div>
+
+<p style='color:#273a6e'><i> When creating a general list, we need to use brackets <code>()</code> and semicolons <code>;</code>  to explicitly delimit the different items and associated types in our list or else we can use <code>,</code> the join operator, to explicitly join together lists or atoms of different types. </i></p>
+
+<p>A general list has type <code>0h</code></p>
+<div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span><span class="n">person</span><span class="w"></span>
+</code></pre></div>
+
+<p>In the case of <code>person</code>, each element is an atom and they aren't all of the same type. We can use the <a href="https://code.kx.com/q/ref/each/"><code>each</code></a> command in conjunction with <code>type</code> to determine the type of each item in our list. </p>
+<p>The <code>each</code> operator extends the behaviour of a function to act over each item to the right and is our first example of an <a href="https://code.kx.com/q/ref/iterators/">Iterator</a> in kdb+/q.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="w"> </span><span class="nb">each</span><span class="w"> </span><span class="n">person</span><span class="w"></span>
+</code></pre></div>
+
+<p>To reiterate, a general list can also be a list of lists as seen below.  </p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">matrix</span><span class="o">:</span><span class="p">(</span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="p">;</span><span class="il">4</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">6</span><span class="p">)</span><span class="w"></span>
+<span class="nb">type</span><span class="w"> </span><span class="n">matrix</span><span class="w"></span>
+<span class="nb">type</span><span class="w"> </span><span class="nb">each</span><span class="w"> </span><span class="n">matrix</span><span class="w"></span>
+</code></pre></div>
+
+<h1>List creation</h1>
+<h2>Creating lists from atoms</h2>
+<p>The most simple list to create in kdb+/q is an empty list</p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">el</span><span class="o">:</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+
+<p>Joining an empty list to an atom will make it a list, or we can use the keyword <a href="https://code.kx.com/q/ref/enlist/"><code>enlist</code></a> to manually create a level of nesting</p>
+<div class="highlight"><pre><span></span><code><span class="c1">/creating a variable</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="nv">a</span><span class="o">:</span><span class="il">4</span><span class="w"></span>
+<span class="nb">type</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1">/adding an empty list to create a list</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="n">el</span><span class="o">,</span><span class="n">a</span><span class="w"></span>
+<span class="nb">type</span><span class="w"> </span><span class="n">el</span><span class="o">,</span><span class="n">a</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="ow">enlist</span><span class="w"> </span><span class="ow">enlist</span><span class="w"> </span><span class="il">4</span><span class="w"> </span>
+<span class="p">()</span><span class="o">,</span><span class="p">()</span><span class="o">,</span><span class="il">4</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Generating lists</h2>
+<p>There are two very useful operators for generating lists, <a href="https://code.kx.com/q/ref/til/"><code>til</code></a> and <a href="https://code.kx.com/q/ref/deal/#roll-and-deal"><code>?</code></a>(aka <a href="https://code.kx.com/q/ref/deal/#roll-and-deal">roll/deal</a>).</p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">L</span><span class="o">:</span><span class="il">20</span><span class="o">?</span><span class="il">300</span><span class="w"></span>
+<span class="nb">show</span><span class="w"> </span><span class="nv">M</span><span class="o">:</span><span class="nb">til</span><span class="w"> </span><span class="il">20</span><span class="w"></span>
+</code></pre></div>
+
+<p>The Q language has a built in operator (<code>?</code>) which allows for the generation of random data
+according to a uniform distribution. </p>
+<div class="highlight"><pre><span></span><code><span class="o">?</span><span class="p">[</span><span class="il">5</span><span class="p">;</span><span class="il">10</span><span class="p">]</span><span class="w">     </span><span class="c1">//generate a list of 5 random longs between 0 and 9</span><span class="w"></span>
+<span class="il">5</span><span class="o">?</span><span class="il">10</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="o">?</span><span class="p">[</span><span class="il">5</span><span class="p">;</span><span class="mf">10.0</span><span class="p">]</span><span class="w">   </span><span class="c1">//generates a list of 5 random floats between 0 and 10.0</span><span class="w"></span>
+<span class="il">5</span><span class="o">?</span><span class="mf">10.</span><span class="w"></span>
+</code></pre></div>
+
+<p>Generate a list of 5 unique random longs between 0 and 9 - the negative number indicates we want to draw <em>without</em> replacement. </p>
+<div class="highlight"><pre><span></span><code><span class="o">?</span><span class="p">[</span><span class="o">-</span><span class="il">5</span><span class="p">;</span><span class="il">10</span><span class="p">]</span><span class="w">   </span><span class="c1">//generates without replacement</span><span class="w"></span>
+<span class="o">-</span><span class="il">5</span><span class="o">?</span><span class="il">10</span><span class="w"></span>
+</code></pre></div>
+
+<p>What would we get if this number was -11? i.e. <code>?[-11;10]</code></p>
+<p>We would get an error, as we can't draw 11 items from 10 items without replacing some of them! (see <a href="https://en.wikipedia.org/wiki/Pigeonhole_principle">Pidgeonhole principle</a>)  </p>
+<p>It is also possible to specify the right argument as a list. In that case, the random data will be drawn uniformly  from the elements in that list. For example:</p>
+<div class="highlight"><pre><span></span><code><span class="o">?</span><span class="p">[</span><span class="il">5</span><span class="p">;</span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="p">]</span><span class="w">             </span><span class="c1">//select 5 elements from the list 1 2 3</span><span class="w"></span>
+<span class="il">5</span><span class="o">?</span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="o">?</span><span class="p">[</span><span class="il">5</span><span class="p">;</span><span class="ss">`IBM`GOOG</span><span class="p">]</span><span class="w">         </span><span class="c1">//select 5 elements from the list `IBM`GOOG</span><span class="w"></span>
+<span class="il">5</span><span class="o">?</span><span class="ss">`IBM`GOOG</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="o">?</span><span class="p">[</span><span class="il">5</span><span class="p">;</span><span class="ld">2011.01.01</span><span class="o">-</span><span class="nb">til</span><span class="w"> </span><span class="il">3</span><span class="p">]</span><span class="w">  </span><span class="c1">//select 5 elements from a list of 3 dates</span><span class="w"></span>
+<span class="il">5</span><span class="o">?</span><span class="ld">2011.01.01</span><span class="o">-</span><span class="nb">til</span><span class="w"> </span><span class="il">3</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Joining lists</h2>
+<p>We can join lists with <a href="https://code.kx.com/q/ref/join/"><code>,</code></a> - we did this earlier when we created lists from atoms.</p>
+<div class="highlight"><pre><span></span><code><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="o">,</span><span class="il">4</span><span class="w"> </span><span class="il">5</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="il">1</span><span class="o">,</span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="w"> </span><span class="il">4</span><span class="w"></span>
+<span class="mf">1.8</span><span class="o">,</span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="w"> </span><span class="il">4</span><span class="o">,</span><span class="ld">10:00</span><span class="o">+</span><span class="w"> </span><span class="nb">til</span><span class="w"> </span><span class="il">2</span><span class="w"></span>
+</code></pre></div>
+
+<p>Observe that if the arguments are not of uniform type, the result is a general list. </p>
+<p style='color:#273a6e'><i> Notice when kdb+/q returns a general list it displays it vertically - this is to make it visually clearer that the items in the list are different types. </i></p>
+
+<h1>List indexing and access</h1>
+<h2>List indexing</h2>
+<p>One or more items may be extracted from a simple list with N items by passing their indices which range from 0 up to N-1</p>
+<p style='color:#273a6e'><i> When specifying the index you can only use a whole value like an integer, long  or short - if you try to use a float it will throw a type error! </i></p>
+
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">L</span><span class="o">:</span><span class="il">10</span><span class="w"> </span><span class="il">20</span><span class="w"> </span><span class="il">30</span><span class="w"> </span><span class="il">40</span><span class="w"> </span><span class="il">50</span><span class="w"></span>
+<span class="nb">count</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
+</code></pre></div>
+
+<p>You can use indexes to retrieve the list items at those locations</p>
+<div class="highlight"><pre><span></span><code><span class="n">L</span><span class="w"> </span><span class="il">0</span><span class="w">       </span><span class="c1">//Obtain first item </span><span class="w"></span>
+<span class="n">L</span><span class="w"> </span><span class="il">0</span><span class="w"> </span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w">   </span><span class="c1">//Obtain the first 3 items</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1">//or written explicitly (functionally)</span><span class="w"></span>
+<span class="n">L</span><span class="p">[</span><span class="il">0</span><span class="p">]</span><span class="w"></span>
+<span class="n">L</span><span class="p">[</span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+
+<p>One interesting feature of lists is that indexing out of bounds does not throw an out of bounds
+exception. Instead, it returns a null value of the appropriate data type. For example:</p>
+<div class="highlight"><pre><span></span><code><span class="n">L</span><span class="p">[</span><span class="il">10</span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+
+<p>0N is returned because <code>L</code> is a homogeneous list of longs. Below you will see two other examples including symbols and reals</p>
+<div class="highlight"><pre><span></span><code><span class="nv">z</span><span class="o">:</span><span class="ss">`IBM`MSFT`GOOG</span><span class="w"> </span>
+<span class="n">z</span><span class="p">[</span><span class="il">10</span><span class="p">]</span><span class="w"> </span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="nv">y</span><span class="o">:</span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="mf">3e</span><span class="w"></span>
+<span class="n">y</span><span class="p">[</span><span class="il">4</span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Indexing Lists at Depth</h2>
+<p>We can continue to index into list structures to retrieve nested items. The keyword <a href="https://code.kx.com/q/ref/cut/"><code>cut</code></a> can be used to create a matrix by cutting a list at every third index. </p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">matrix</span><span class="o">:</span><span class="w"> </span><span class="il">3</span><span class="w"> </span><span class="nb">cut</span><span class="w"> </span><span class="il">3</span><span class="o">*</span><span class="w"> </span><span class="nb">til</span><span class="w"> </span><span class="il">9</span><span class="w"> </span>
+<span class="n">matrix</span><span class="p">[</span><span class="il">0</span><span class="p">]</span><span class="w">    </span><span class="c1">//the first item of our matrix is the first &quot;row&quot;</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">matrix</span><span class="p">[</span><span class="il">0</span><span class="p">][</span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="p">]</span><span class="w"> </span><span class="c1">//we can now index into *that* list to get the 2nd and 3rd items</span><span class="w"></span>
+</code></pre></div>
+
+<p>There is more simple syntax to achieve this in kdb+ where we can provide the associated indexing chain directly.</p>
+<div class="highlight"><pre><span></span><code><span class="n">matrix</span><span class="p">[</span><span class="il">0</span><span class="p">;</span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+
+<p style='color:#273a6e'><i> There is a difference between <code>matrix[0;1]</code> versus <code>matrix 0 1</code>. The <code>;</code> indicates a change in depth at which the indexing applies. Make sure you understand the difference between both before moving on.</i></p>
+
+<h2>Index Elision</h2>
+<p>If we know that our list is a list of lists, like our <code>matrix</code> variable, and we want to return the first item of each of these nested lists, we can do this explicitly  as follows.</p>
+<div class="highlight"><pre><span></span><code><span class="n">matrix</span><span class="w"></span>
+<span class="n">matrix</span><span class="p">[</span><span class="il">0</span><span class="w"> </span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="p">;</span><span class="il">0</span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+
+<p>If we want to do this more generally without explicitly defining the specific indexes we care about at a given level, we can use this syntax instead:  </p>
+<div class="highlight"><pre><span></span><code><span class="n">matrix</span><span class="p">[;</span><span class="il">0</span><span class="p">]</span><span class="w">  </span><span class="c1">//get the first item of all lists</span><span class="w"></span>
+</code></pre></div>
+
+<p>By not specifying the first index, we actually apply to all and this is extensible across lists we don’t know the full size of. </p>
+<h1>List Manipulation</h1>
+<h2>Subsetting lists</h2>
+<p>The keyword <a href="https://code.kx.com/q/ref/take/"><code>#</code></a> (referred to as <a href="https://code.kx.com/q/ref/take/">take</a>) is used to retrieve the first or last N elements of a list. </p>
+<div class="highlight"><pre><span></span><code><span class="n">L</span><span class="w"></span>
+<span class="il">3</span><span class="o">#</span><span class="n">L</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="o">-</span><span class="il">3</span><span class="o">#</span><span class="n">L</span><span class="w"> </span><span class="c1">/ If you change the number to negative, you retrieve the last 3 elements</span><span class="w"></span>
+</code></pre></div>
+
+<p>Alternatively, by using the keyword <a href="https://code.kx.com/q4m3/A_Built-in_Functions/#a20-cut-_"><code>_</code></a> (referred to as <a href="https://code.kx.com/q4m3/A_Built-in_Functions/#a20-cut-_">cut/drop</a> ), we can remove the first or last N elements of a list to return just the remainder of the list.</p>
+<div class="highlight"><pre><span></span><code><span class="il">2</span><span class="o">_</span><span class="n">L</span><span class="w"> </span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="o">-</span><span class="il">2</span><span class="o">_</span><span class="n">L</span><span class="w">  </span><span class="c1">/removes the last 2 elements</span><span class="w"></span>
+</code></pre></div>
+
+<p>We can use the keyword <a href="https://code.kx.com/q/ref/sublist/"><code>sublist</code></a> to return a sublist of a list in a similar way to <code>#</code>. The first parameter is a simple list of two non-negative integers: the first item is the starting index (start); the second item is the number of items to retrieve (count). The second parameter (target) is a list (or dictionary).</p>
+<div class="highlight"><pre><span></span><code><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="w"> </span><span class="nb">sublist</span><span class="w"> </span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w"> </span><span class="il">3</span><span class="w"> </span><span class="il">4</span><span class="w"> </span><span class="il">5</span><span class="w"></span>
+<span class="il">0</span><span class="w"> </span><span class="il">6</span><span class="w"> </span><span class="nb">sublist</span><span class="w"> </span><span class="s2">&quot;KDB is fun&quot;</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="il">8</span><span class="o">#</span><span class="nb">til</span><span class="w"> </span><span class="il">5</span><span class="w"></span>
+<span class="il">8</span><span class="w"> </span><span class="nb">sublist</span><span class="w"> </span><span class="nb">til</span><span class="w"> </span><span class="il">5</span><span class="w"></span>
+</code></pre></div>
+
+<p style='color:#273a6e'><i>The only broadcasting that kdb+/q does as a rule is between atomic values and lists e.g. <code>1 + 1 2 3</code>. If broadcasting is required we can use <code>#</code> to force lists to be the same length, but this behavior is not standard or expected.</i></p>
+
+<h2>Finding items in lists</h2>
+<p>Depending on the type of arguments passed, the behavior of the <code>?</code> operator can differ. We previously used <code>?</code> to generate random data as follows: </p>
+<div class="highlight"><pre><span></span><code><span class="o">?</span><span class="p">[</span><span class="il">5</span><span class="p">;</span><span class="il">1</span><span class="w"> </span><span class="il">4</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">6</span><span class="w"> </span><span class="il">7</span><span class="p">]</span><span class="w">   </span><span class="c1">//generate 5 items drawn randomly from the passed list</span><span class="w"></span>
+<span class="il">5</span><span class="o">?</span><span class="il">1</span><span class="w"> </span><span class="il">4</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">6</span><span class="w"> </span><span class="il">7</span><span class="w">      </span><span class="c1">//infix - generate 5 items from the list </span><span class="w"></span>
+</code></pre></div>
+
+<p>Above the first argument is an atomic integer, therefore q is generating a list of 5 random elements taken from the 2nd argument.</p>
+<p>If the first argument is a list however, it is known as the <a href="https://code.kx.com/q4m3/8_Tables/#863-find"><code>find</code></a> operator. This operator will return the index of the first occurrence of each element in the 2nd argument. For example:</p>
+<div class="highlight"><pre><span></span><code><span class="o">?</span><span class="p">[</span><span class="il">1</span><span class="w"> </span><span class="il">4</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">6</span><span class="w"> </span><span class="il">7</span><span class="p">;</span><span class="il">5</span><span class="p">]</span><span class="w">     </span><span class="c1">//first occurrence of 5</span><span class="w"></span>
+<span class="il">1</span><span class="w"> </span><span class="il">4</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">6</span><span class="w"> </span><span class="il">7</span><span class="o">?</span><span class="il">5</span><span class="w">        </span><span class="c1">//infix - where is the first occurrence of 5 in this list</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="o">?</span><span class="p">[</span><span class="il">1</span><span class="w"> </span><span class="il">4</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">6</span><span class="w"> </span><span class="il">7</span><span class="p">;</span><span class="il">5</span><span class="w"> </span><span class="il">1</span><span class="p">]</span><span class="w">   </span><span class="c1">//first occurrence of 5 and 1 </span><span class="w"></span>
+<span class="il">1</span><span class="w"> </span><span class="il">4</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">5</span><span class="w"> </span><span class="il">6</span><span class="w"> </span><span class="il">7</span><span class="o">?</span><span class="il">5</span><span class="w"> </span><span class="il">1</span><span class="w"> </span>
+</code></pre></div>
+
+<p>Another very important keyword in kdb+/q is <a href="https://code.kx.com/q/ref/where/">where</a> which returns the indices that are 1b in a boolean list.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">where</span><span class="w"> </span><span class="mb">101010b</span><span class="w"></span>
+</code></pre></div>
+
+<p>This is useful to find the positions where a certain criteria is met: </p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">L</span><span class="o">:</span><span class="il">10</span><span class="o">?</span><span class="il">50</span><span class="w"></span>
+<span class="n">L</span><span class="w"> </span><span class="o">&gt;</span><span class="il">30</span><span class="w"></span>
+<span class="nb">where</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">&gt;</span><span class="il">30</span><span class="w"></span>
+</code></pre></div>
+
+<p>We can then use the list of indices returned by the <code>where</code> command, to index into our original list and return the values from our list that meet the filter criteria.</p>
+<div class="highlight"><pre><span></span><code><span class="n">L</span><span class="p">[</span><span class="nb">where</span><span class="p">[</span><span class="n">L</span><span class="o">&gt;=</span><span class="il">30</span><span class="p">]]</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Analysing lists</h2>
+<p>The q language has some useful built-in functions that can be used to get information about a list. 
+Some of the keywords (notice no loops!) return singular values and in some case aggregate values, while others may return lists.</p>
+<p><strong>Some keywords that return singular/atomic values:</strong></p>
+<ul>
+<li><a href="https://code.kx.com/q/ref/count/">count</a> - Obtain the count of a list    </li>
+<li><a href="https://code.kx.com/q/ref/first/">first</a> - Extract the first element of a list  </li>
+<li><a href="https://code.kx.com/q/ref/first/#last">last</a> - Extract the last element of the list  </li>
+<li><a href="https://code.kx.com/q4m3/A_Built-in_Functions/#a51-max">max</a> - Find the maximum value in a list  </li>
+<li><a href="https://code.kx.com/q4m3/A_Built-in_Functions/#a57-min">min</a> - Find the minimum value in a list  </li>
+<li><a href="https://code.kx.com/q/ref/avg/">avg</a> - Find the mean of a list  </li>
+<li><a href="https://code.kx.com/q/ref/dev/">dev</a> - Standard deviation of a list  </li>
+<li><a href="https://code.kx.com/q/ref/var/">var</a> - Variance of a list  </li>
+<li><a href="https://code.kx.com/q/ref/sum/">sum</a> - Total summation of a list  </li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">L</span><span class="w"></span>
+<span class="nb">count</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
+<span class="nb">first</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
+<span class="ow">last</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
+<span class="ow">max</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
+<span class="ow">min</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
+<span class="ow">avg</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
+<span class="ow">dev</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
+<span class="ow">var</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
+<span class="ow">sum</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
+</code></pre></div>
+
+<p><strong>Some keywords return list/vector values:</strong>
+You can retrieve the running maximum and minimum by applying the keywords below:</p>
+<ul>
+<li><a href="https://code.kx.com/q/ref/sum/#sums">sums</a> - Running total of a list</li>
+<li><a href="https://code.kx.com/q/ref/max/#maxs">maxs</a> - Running maximums through a list</li>
+<li><a href="https://code.kx.com/q/ref/min/#mins">mins</a> - Running minimums through a list </li>
+<li><a href="https://code.kx.com/q/ref/avg/#avgs">avgs</a> - Running average through a list</li>
+<li><a href="https://code.kx.com/q/ref/null/">null</a> - Returns a boolean list with <code>1b</code> where any value of a list is null</li>
+<li><a href="https://code.kx.com/q/ref/distinct/">distinct</a> -Returns the unique items in the list, in order of first occurrence</li>
+<li><a href="https://code.kx.com/q/ref/group/">group</a> - Returns a dictionary where each distinct item in the list is mapped to the indexes of occurrence, in order of occurrence</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">L</span><span class="o">:</span><span class="il">30</span><span class="w"> </span><span class="m">0N</span><span class="w"> </span><span class="il">10</span><span class="w"> </span><span class="il">20</span><span class="w"> </span><span class="il">50</span><span class="w"> </span><span class="il">30</span><span class="w"> </span><span class="il">60</span><span class="w"> </span><span class="il">30</span><span class="w"> </span><span class="il">40</span><span class="w"> </span><span class="il">50</span><span class="w"></span>
+<span class="nb">maxs</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
+<span class="nb">mins</span><span class="w"> </span><span class="n">L</span><span class="w">  </span>
+<span class="nb">avgs</span><span class="w"> </span><span class="n">L</span><span class="w"> </span>
+<span class="nb">sums</span><span class="w"> </span><span class="n">L</span><span class="w"> </span>
+</code></pre></div>
+
+<p>Notice in the examples above the behavior of each function with respect to null values. </p>
+<h1>List comparison</h1>
+<p>We use the <a href="https://code.kx.com/q/ref/equal/"><code>=</code> (equals)</a> operator to find which atoms within a list have equal values - it applies in a pairwise fashion</p>
+<div class="highlight"><pre><span></span><code><span class="ss">`b`b`c</span><span class="o">=</span><span class="p">(</span><span class="ss">`a`b`c</span><span class="p">)</span><span class="w"></span>
+
+<span class="p">(</span><span class="il">1</span><span class="p">;</span><span class="il">2</span><span class="p">;</span><span class="il">3</span><span class="p">;</span><span class="il">4</span><span class="p">;</span><span class="il">5</span><span class="p">)</span><span class="o">=</span><span class="p">(</span><span class="il">5</span><span class="p">;</span><span class="il">2</span><span class="p">;</span><span class="il">3</span><span class="p">;</span><span class="il">2</span><span class="p">;</span><span class="il">1</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<p>We can use the <a href="https://code.kx.com/q/ref/match/"><code>~</code> (match)</a> operator to check if two items are <strong>identical</strong>. Match also checks the data type of the arguments, not just the values.</p>
+<div class="highlight"><pre><span></span><code><span class="ss">`a`b`c</span><span class="o">~</span><span class="ss">`a`b`c</span><span class="w"></span>
+<span class="p">(</span><span class="il">1</span><span class="p">;</span><span class="il">2</span><span class="p">;</span><span class="il">3</span><span class="p">)</span><span class="o">~</span><span class="p">(</span><span class="il">1</span><span class="p">;</span><span class="il">2</span><span class="p">;</span><span class="il">3</span><span class="p">;</span><span class="il">4</span><span class="p">)</span><span class="w"></span>
+<span class="p">(</span><span class="il">1</span><span class="p">;</span><span class="il">2</span><span class="p">;</span><span class="il">3</span><span class="p">)</span><span class="o">~</span><span class="p">(</span><span class="mf">1.0</span><span class="p">;</span><span class="mf">2.0</span><span class="p">;</span><span class="mf">3.0</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<p style='color:#273a6e'><i> Lists must be of equal length when using <code>=</code> or this will return a length error! Match doesn't error with different lengths of input, but since the length is different it won't match. </i></p>
+
+<h1>List Amendment</h1>
+<h2>Amendment by Indexing</h2>
+<p>Items in a list can also be reassigned via item indexing - meaning we can amend an item in a list without having to explicitly redefine it.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">/reassign the third element as 40</span><span class="w"></span>
+<span class="n">L</span><span class="p">[</span><span class="il">2</span><span class="p">]</span><span class="o">:</span><span class="il">40</span><span class="w"></span>
+<span class="n">L</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">L</span><span class="p">[</span><span class="il">1</span><span class="p">]</span><span class="o">:</span><span class="mi">10h</span><span class="w"> </span><span class="c1">/note different type</span><span class="w"></span>
+</code></pre></div>
+
+<p>This next example sets a cap on the values <code>x</code> can take - using the <code>where</code> keyword, we can find and update the indexes where <code>x</code> is greater than 30.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">x</span><span class="o">:</span><span class="il">10</span><span class="o">?</span><span class="il">50</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">x</span><span class="p">[</span><span class="nb">where</span><span class="w"> </span><span class="n">x</span><span class="o">&gt;</span><span class="il">30</span><span class="p">]</span><span class="o">:</span><span class="il">30</span><span class="w"> </span><span class="c1">/Cap the elements of x at 30</span><span class="w"></span>
+<span class="n">x</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Amendment using @</h2>
+<p>We can also use the primitive <a href="https://code.kx.com/q/ref/amend/"><code>@</code></a> (also referred as amend or apply) to amend a list. Firstly we see how this can be used to return the value at a given index in the same way as indexing:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">L</span><span class="o">:</span><span class="w"> </span><span class="il">10</span><span class="o">?</span><span class="il">20</span><span class="w"></span>
+<span class="o">@</span><span class="p">[</span><span class="n">L</span><span class="p">;</span><span class="w"> </span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+
+<p>The <code>@</code> primitive can take more arguments to extend it's behavior - namely, we can apply functions directly to our list by passing the function we wish to apply as a third argument. The fourth argument is only used if the function requires additional input.</p>
+<div class="highlight"><pre><span></span><code><span class="o">@</span><span class="p">[</span><span class="n">L</span><span class="p">;</span><span class="w"> </span><span class="o">::</span><span class="p">;</span><span class="w"> </span><span class="nb">neg</span><span class="p">]</span><span class="w">    </span><span class="c1">//amend the list to apply single argument function </span><span class="w"></span>
+<span class="o">@</span><span class="p">[</span><span class="n">L</span><span class="p">;</span><span class="w"> </span><span class="o">::</span><span class="p">;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="il">2</span><span class="p">]</span><span class="w">  </span><span class="c1">//amend the list at the null index (all indexes) to add 2 to each </span><span class="w"></span>
+<span class="n">L</span><span class="w"> </span>
+</code></pre></div>
+
+<p style='color:#273a6e'><i> The identity <code>::</code> in kdb+/q serves two purposes - it is both a <a href="https://code.kx.com/q/ref/identity/#null">generic null</a> (for any type) and also as an identity function (see Functions section). In the example above we are using it as the generic null to indicate we selected no indexes in particular. The following statements are equivalent <code>L[::]</code>,<code>L[]</code> and <code>L</code>. </i></p>
+
+<p>What would happen if we didn't use the null and instead just called <code>@[L; ; + ; 2]</code>?</p>
+<p>We would create a projection! Similar to <code>+[;2]</code> or <code>mavg[2;]</code>  </p>
+<p>By specifying the assignment operator <code>:</code> as the third argument we can update our list values:</p>
+<div class="highlight"><pre><span></span><code><span class="o">@</span><span class="p">[</span><span class="n">L</span><span class="p">;</span><span class="nb">where</span><span class="w"> </span><span class="n">L</span><span class="o">&gt;</span><span class="il">10</span><span class="p">;</span><span class="o">:</span><span class="p">;</span><span class="m">0N</span><span class="p">]</span><span class="w">   </span><span class="c1">//make everything above 10 null</span><span class="w"></span>
+</code></pre></div>
+
+<p>Note that this doesn't actually update our original list <code>L</code> (unlike the index assignment), to do that we need to reassign the output back to <code>L</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="nv">L</span><span class="o">:@</span><span class="p">[</span><span class="n">L</span><span class="p">;</span><span class="il">0</span><span class="w"> </span><span class="il">1</span><span class="p">;</span><span class="il">10</span><span class="o">+</span><span class="p">]</span><span class="w"> </span><span class="c1">//add 10 to the first two indices in list x</span><span class="w"></span>
+<span class="o">@</span><span class="p">[</span><span class="n">L</span><span class="p">;</span><span class="nb">where</span><span class="w"> </span><span class="n">L</span><span class="o">&gt;</span><span class="il">25</span><span class="p">;</span><span class="il">10</span><span class="o">+</span><span class="p">]</span><span class="w"> </span><span class="c1">//add 10 to any indice in list x which is greater 25</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Amendment using .</h2>
+<p>If we want to index at depth, we instead use <a href="https://code.kx.com/q/ref/apply/#apply-index"><code>.</code></a>(aka <a href="https://code.kx.com/q/ref/apply/#apply-index">apply-index</a>). </p>
+<div class="highlight"><pre><span></span><code><span class="n">matrix</span><span class="w"></span>
+<span class="n">matrix</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="il">1</span><span class="w"> </span><span class="il">2</span><span class="w">      </span><span class="c1">//Indexing into the second row to get third item </span><span class="w"></span>
+<span class="n">matrix</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="o">::</span><span class="p">;</span><span class="il">0</span><span class="p">)</span><span class="w">   </span><span class="c1">//different syntax- we get the same result as matrix[;0] - :: is a null index</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="o">.</span><span class="p">[</span><span class="n">matrix</span><span class="p">;</span><span class="w"> </span><span class="il">0</span><span class="w"> </span><span class="il">1</span><span class="p">]</span><span class="w">             </span><span class="c1">//equivalent to matrix[0;1]</span><span class="w"></span>
+<span class="o">.</span><span class="p">[</span><span class="n">matrix</span><span class="p">;</span><span class="w"> </span><span class="il">0</span><span class="w"> </span><span class="il">1</span><span class="p">;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="il">500</span><span class="w"> </span><span class="p">]</span><span class="w">   </span><span class="c1">//we can now update at depth</span><span class="w"></span>
+</code></pre></div>
+
+<p><strong>Cross sections</strong></p>
+<p>Index is cross-sectional when the indexes are themselves lists. The simplest case of cross-sectional indexing occurs when the indexes provided are both vectors.</p>
+<p>For example, <code>matrix .(2 1;0 1)</code> selects items 0 and 1 from both items 2 and 1:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">show</span><span class="w"> </span><span class="n">matrix</span><span class="w"></span>
+<span class="n">matrix</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="il">2</span><span class="w"> </span><span class="il">1</span><span class="p">;</span><span class="w"> </span><span class="il">0</span><span class="w"> </span><span class="il">1</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/atoms-and-primitives-in-kdbq.html" rel="bookmark"
+                           title="Permalink to Atoms and Primitives in kdb+/q">Atoms and Primitives in kdb+/q</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2022-08-26T20:52:00+02:00">
+                Published: Fri 26 August 2022
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/fabio-gaiera.html">Fabio Gaiera</a>
+        </address>
+<p>In <a href="/category/kdbq.html">kdb+/q</a>.</p>
+
+</footer><!-- /.post-info -->                <h2>Atoms</h2>
+<p>An <em>atom</em> in kdb+/q is any single item of a particular <a href="https://code.kx.com/q/basics/datatypes/">datatype</a>. Atoms form the building blocks for more advanced data structures in kdb+/q.</p>
+<div class="highlight"><pre><span></span><code><span class="il">2</span><span class="w">   </span><span class="c1">//default type is long when not a floating numeric value</span><span class="w"></span>
+<span class="mf">2.3</span><span class="w"> </span><span class="c1">//default type is float when floating </span><span class="w"></span>
+</code></pre></div>
+
+<p>There are a number …</p>
+                <a class="readmore" href="/atoms-and-primitives-in-kdbq.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://www.linkedin.com/in/fabiogaiera/">LinkedIn</a></li>
+                            <li><a href="https://github.com/fabiogaiera">GitHub</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
